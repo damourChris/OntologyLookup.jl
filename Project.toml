@@ -1,0 +1,13 @@
+name = "OntologyLookup"
+uuid = "3c35c355-0acb-4572-93be-ae4d2e4cf8bf"
+authors = ["Chris Damour"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.6.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
