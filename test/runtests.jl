@@ -2,5 +2,7 @@ using OntologyLookup
 using Test
 
 @testset "OntologyLookup.jl" begin
-    # Write your tests here.
+
+    # Search Module Tests
+    include("test_search.jl")
 end
