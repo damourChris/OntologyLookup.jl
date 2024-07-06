@@ -23,5 +23,16 @@
 
             @test isempty(res)
         end
+
+        @testset "it should return an exact result" begin
+            res = search("cancer"; exact=true)
+            @test all(lowercase.(res.label) .== "cancer")
+        end
+
+        @testset "it should return nothing if search has a typo with exact flag" begin
+            res = search("cancre"; exact=true)
+
+            @test size(res, 1) == 0
+        end
     end
 end
