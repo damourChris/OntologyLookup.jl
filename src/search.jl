@@ -40,13 +40,14 @@ Searches for ontology terms from the Ontology Lookup Service (OLS) using a searc
 - `q::String`: The search query.
 - `rows::Int`: The maximum number of rows to return.
 - `ontology::String`: The ontology to search in.
+- `exact::Bool`: Whether to search for an exact match.
 
 # Returns
 A DataFrame containing the search results.
 
 """
-function search(q::String; rows::Int=10, ontology::String="")
-    q = Dict("q" => q, "rows" => rows, "ontology" => ontology)
+function search(q::String; rows::Int=10, ontology::String="", exact::Bool=false)
+    q = Dict("q" => q, "rows" => rows, "ontology" => ontology, "exactMatch" => exact)
     data = OLSquery(q)
 
     terms = [Term(term) for term in data]
