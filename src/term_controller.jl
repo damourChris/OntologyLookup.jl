@@ -7,6 +7,30 @@ using JSON3
 using HTTP
 import ..OntologyLookup: OLS_BASE_URL, Term
 
+"""
+    onto_terms(onto::AbstractString;
+               [id::AbstractString="",
+               iri::AbstractString="",
+               short_from::AbstractString="",
+               obo_id="",
+               obsoletes::Bool=false,
+               lang::AbstractString="en"])
+
+Fetches ontology terms from the OLS API based on the specified parameters.
+
+## Arguments
+- `onto::AbstractString`: The name of the ontology to fetch terms from.
+- `id::AbstractString`: (optional) The ID of the term.
+- `iri::AbstractString`: (optional) The IRI of the term.
+- `short_from::AbstractString`: (optional) The short form of the term.
+- `obo_id`: (optional) The OBO ID of the term.
+- `obsoletes::Bool`: (optional) Whether to include obsoleted terms. Default is `false`.
+- `lang::AbstractString`: (optional) The language of the term. Default is `"en"`.
+
+## Returns
+A dictionary of terms, where the keys are the OBO IDs of the terms and the values are `Term` objects.
+
+"""
 function onto_terms(onto::AbstractString;
                     id::AbstractString="",
                     iri::AbstractString="", short_from::AbstractString="", obo_id="",
@@ -28,6 +52,21 @@ function onto_terms(onto::AbstractString;
     return terms
 end
 
+"""
+    onto_term(onto::AbstractString, iri::AbstractString; [lang="en"])
+
+Fetches the term information from the specified ontology using the given IRI.
+
+# Arguments
+- `onto::AbstractString`: The name of the ontology.
+- `iri::AbstractString`: The IRI (Internationalized Resource Identifier) of the term.
+- `lang::AbstractString`: (optional) The language code for the term description. Default is "en".
+
+# Returns
+- If the term is found, returns a `Term` object containing the term information.
+- If there is an error fetching the term, a warning is issued and `missing` is returned.
+
+"""
 function onto_term(onto::AbstractString, iri::AbstractString; lang="en")
     iri_encoded = HTTP.URIs.escapeuri(iri)
     iri_double_encoded = HTTP.URIs.escapeuri(iri_encoded)
@@ -48,6 +87,18 @@ function onto_term(onto::AbstractString, iri::AbstractString; lang="en")
     return data
 end
 
+"""
+    get_parents(term::Term)
+
+Fetches the parent terms for a given term.
+
+# Arguments
+- `term::Term`: The term for which to fetch the parent terms.
+
+# Returns
+An array of `Term` objects representing the parent terms of the given term, or `missing` if an error occurs.
+
+""" 
 function get_parents(term::Term)
     iri = term.iri
     iri_encoded = HTTP.URIs.escapeuri(iri)
