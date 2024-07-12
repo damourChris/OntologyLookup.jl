@@ -1,11 +1,7 @@
-```@meta
-CurrentModule = OntologyLookup.Search
-```
-
 # Search the Ontologies 
 
 ```@autodocs
-Modules = [Search]
+Modules = [OntologyLookup.Search]
 ```
 
 
