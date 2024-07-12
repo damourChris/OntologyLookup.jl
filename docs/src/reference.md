@@ -1,12 +1,12 @@
 # TermController Module
 
 ```@autodocs
-Modules = [TermController]
+Modules = [OntologyLookup.TermController]
 ```
 
 # Search Module
 
 ```@autodocs
-Modules = [Search]
+Modules = [OntologyLookup.Search]
 ```
 

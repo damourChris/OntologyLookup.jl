@@ -1,11 +1,11 @@
 ```@meta
-CurrentModule = TermController
+CurrentModule = OntologyLookup.TermController
 ```
 
 # TermController API Wrapper 
 
 ```@autodocs
-Modules = [TermController]
+Modules = [OntologyLookup.TermController]
 ```
 
 
