@@ -14,10 +14,12 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Search" => "search.md",
+        "Term Controller" => "term_controller.md",
     ],
 )
 
 deploydocs(;
     repo="github.com/damourChris/OntologyLookup.jl",
-    devbranch="main",
+    devbranch="dev",
 )
