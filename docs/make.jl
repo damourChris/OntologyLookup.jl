@@ -21,5 +21,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/damourChris/OntologyLookup.jl",
-    devbranch="dev",
+    devbranch="main",
 )
