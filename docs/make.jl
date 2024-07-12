@@ -16,6 +16,7 @@ makedocs(;
         "Home" => "index.md",
         "Search" => "search.md",
         "Term Controller" => "term_controller.md",
+        "Reference" => "reference.md"
     ],
 )
 
