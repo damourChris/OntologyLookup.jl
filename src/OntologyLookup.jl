@@ -4,6 +4,8 @@ const OLS_BASE_URL = "https://www.ebi.ac.uk/ols4/api/"
 export OLS_BASE_URL
 
 include("terms.jl")
+export Term
+
 include("client.jl")
 using .Client
 
