@@ -1,4 +1,4 @@
-module OLSClient
+module Client
 
 using HTTP
 

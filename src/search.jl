@@ -3,7 +3,7 @@ module Search
 using DataFrames
 using JSON3
 
-using ..OLSClient
+using ..Client
 import ..OntologyLookup: OLS_BASE_URL, Term
 
 export search
@@ -22,7 +22,7 @@ Query the Ontology Lookup Service (OLS) with the given parameters.
 """
 function OLSquery(q::Dict)
     url = OLS_BASE_URL * "search"
-    response = OLSClient.get(url; query=q)
+    response = Client.get(url; query=q)
 
     body = JSON3.read(String(response.body))
 
