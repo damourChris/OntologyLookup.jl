@@ -21,6 +21,30 @@ Fetches ontology terms from the OLS API based on the specified parameters.
 ## Arguments
 - `onto::AbstractString`: The name of the ontology to fetch terms from.
 - `id::AbstractString`: (optional) The ID of the term.
+- `iri::AbstractString`: (optional) The IRI of the term.
+- `short_from::AbstractString`: (optional) The short form of the term.
+- `obo_id`: (optional) The OBO ID of the term.
+- `obsoletes::Bool`: (optional) Whether to include obsoleted terms. Default is `false`.
+- `lang::AbstractString`: (optional) The language of the term. Default is `"en"`.
+
+## Returns
+A dictionary of terms, where the keys are the OBO IDs of the terms and the values are `Term` objects.
+
+"""
+"""
+    onto_terms(onto::AbstractString;
+               [id::AbstractString="",
+               iri::AbstractString="",
+               short_from::AbstractString="",
+               obo_id="",
+               obsoletes::Bool=false,
+               lang::AbstractString="en"])
+
+Fetches ontology terms from the OLS API based on the specified parameters.
+
+## Arguments
+- `onto::AbstractString`: The name of the ontology to fetch terms from.
+- `id::AbstractString`: (optional) The ID of the term.
 - `iri::AbstractString`: (optional) The IRI of the term. Note, set encode_iri to false if the IRI is already encoded.
 - `short_from::AbstractString`: (optional) The short form of the term.
 - `obo_id`: (optional) The OBO ID of the term.
