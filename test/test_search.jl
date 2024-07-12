@@ -25,8 +25,8 @@
         end
 
         @testset "it should return an exact result" begin
-            res = search("cancer"; exact=true)
-            @test_broken all(lowercase.(res.label) .== "cancer")
+            res = search("t cell"; exact=true)
+            @test_broken all(lowercase.(res.label) .== "t cell")
         end
 
         @testset "it should return nothing if search has a typo with exact flag" begin
