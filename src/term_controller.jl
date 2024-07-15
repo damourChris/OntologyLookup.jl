@@ -41,15 +41,19 @@ function onto_terms(onto::AbstractString;
              "obsoletes" => obsoletes, "lang" => lang)
     q = filter(x -> x[2] != "" && x[2] != false, q)
 
-    response = Client.get(url; query=q)
+    data = try
+        response = Client.get(url; query=q)
 
-    body = JSON3.read(String(response.body), Dict)
+        body = JSON3.read(String(response.body), Dict)
 
-    data = body["_embedded"]["terms"]
+        data = body["_embedded"]["terms"]
 
-    terms = Dict([term["obo_id"] => Term(term) for term in data])
-
-    return terms
+        terms = Dict([term["obo_id"] => Term(term) for term in data])
+        return terms
+    catch
+        @warn "Error fetching term with IRI: $iri. Returning missing."
+        return missing
+    end
 end
 
 """
