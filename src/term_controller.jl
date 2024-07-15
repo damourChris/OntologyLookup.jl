@@ -80,7 +80,7 @@ function onto_term(onto::AbstractString, iri::AbstractString; lang="en")
         term = Term(body)
         return term
     catch
-        @warn "Error fetching term with IRI: $iri. Returning nothing."
+        @warn "Error fetching term with IRI: $iri. Returning missing."
         return missing
     end
 
@@ -115,7 +115,7 @@ function get_parents(term::Term)
         parents = [Term(parent) for parent in data]
         return parents
     catch
-        @warn "Error fetching parents for term with IRI: $iri. Returning nothing."
+        @warn "Error fetching parents for term with IRI: $iri. Returning missing."
         return missing
     end
 
