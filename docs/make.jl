@@ -1,5 +1,6 @@
 using OntologyLookup
 using Documenter
+using Changelog
 
 DocMeta.setdocmeta!(OntologyLookup, :DocTestSetup, :(using OntologyLookup); recursive=true)
 Changelog.generate(Changelog.Documenter(),
