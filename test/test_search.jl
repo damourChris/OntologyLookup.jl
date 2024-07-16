@@ -1,38 +1,36 @@
-@testset "Search" begin
-    @testset "search" begin
-        @testset "it should return a valid response" begin
-            res = search("cancer")
+@testitem "return a valid response" begin
+    res = search("cancer")
 
-            @test !isempty(res)
-        end
+    @test !isempty(res)
+end
 
-        @testset "it should return the correct number of results" begin
-            res = search("cancer"; rows=5)
+@testitem "return the correct number of results" begin
+    res = search("cancer"; rows=5)
 
-            @test size(res, 1) == 5
-        end
+    @test size(res, 1) == 5
+end
 
-        @testset "it should query a specific ontology" begin
-            res = search("cancer"; ontology="go")
+@testitem "query a specific ontology" begin
+    res = search("cancer"; ontology="go")
 
-            @test all(res.ontology_prefix .== "GO")
-        end
+    @test all(res.ontology_prefix .== "GO")
+end
 
-        @testset "it should return an empty DataFrame if no results are found" begin
-            res = search("asdfghjkl")
+@testitem "return an empty DataFrame if no results are found" begin
+    res = search("asdfghjkl")
 
-            @test isempty(res)
-        end
+    @test isempty(res)
+    @test size(res, 1) == 0
+end
 
-        @testset "it should return an exact result" begin
-            res = search("t cell"; exact=true)
-            @test_broken all(lowercase.(res.label) .== "t cell")
-        end
+@testitem "return an exact result" begin
+    res = search("t cell"; exact=true, ontology="CL")
 
-        @testset "it should return nothing if search has a typo with exact flag" begin
-            res = search("cancre"; exact=true)
+    @test_broken all(lowercase.(res.label) .== "t cell")
+end
 
-            @test size(res, 1) == 0
-        end
-    end
+@testitem "return nothing if search has a typo with exact flag" begin
+    res = search("cancre"; exact=true)
+
+    @test size(res, 1) == 0
 end
