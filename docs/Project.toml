@@ -1,3 +1,4 @@
 [deps]
+Changelog = "5217a498-cd5d-4ec6-b8c2-9b85a09b6e3e"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 OntologyLookup = "3c35c355-0acb-4572-93be-ae4d2e4cf8bf"
