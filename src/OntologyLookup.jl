@@ -15,7 +15,7 @@ export search
 
 include("term_controller.jl")
 using .TermController
-export onto_terms, onto_term, get_parents
+export onto_terms, onto_term, get_parents, get_hierarchical_parent
 
 function __init__()
 end
