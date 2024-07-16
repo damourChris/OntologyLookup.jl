@@ -1,6 +1,6 @@
 module TermController
 
-export onto_terms, onto_term, get_parents
+export onto_terms, onto_term, get_parents, get_hierarchical_parent
 
 using ..Client
 using JSON3
@@ -124,6 +124,57 @@ function get_parents(term::Term)
     end
 
     return parents
+end
+
+"""
+    get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Term}=missing)
+
+Fetches the hierarchical parent of a given term.
+
+## Arguments
+- `term::Term`: The term for which to fetch the hierarchical parent.
+- `preferred_parent::Union{Missing,Term}` (optional): The preferred parent term to be returned, if multiple parents are found.
+
+## Returns
+- If a single parent is found, returns the hierarchical parent as a `Term` object.
+- If multiple parents are found and a preferred parent is specified, returns the preferred parent as a `Term` object.
+- If multiple parents are found and no preferred parent is specified, returns the first parent as a `Term` object.
+- If an error occurs while fetching the parents, returns `missing`.
+
+"""
+function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Term}=missing)
+    iri = term.iri
+    iri_encoded = HTTP.URIs.escapeuri(iri)
+    iri_double_encoded = HTTP.URIs.escapeuri(iri_encoded)
+
+    url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
+          iri_double_encoded *
+          "/hierarchicalParents"
+
+    data = try
+        response = Client.get(url)
+
+        body = JSON3.read(String(response.body), Dict)
+        data = body["_embedded"]["terms"]
+        if (length(data) > 1)
+            if !isnothing(preferred_parent)
+                for parent in data
+                    if Term(parent) == preferred_parent
+                        @info "Preferred parent found for term with IRI: $iri."
+                        return preferred_parent
+                    end
+                end
+            end
+            @warn "More than one parent found for term with IRI: $iri. Returning the first parent."
+        end
+        parent = Term(data[1])
+        return parent
+    catch
+        @warn "Error fetching parents for term with IRI: $iri. Returning missing."
+        return missing
+    end
+
+    return data
 end
 
 end # module
