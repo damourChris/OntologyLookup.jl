@@ -57,3 +57,15 @@ function print_optional(io::IO, name::String, value::Union{T,Missing}) where {T}
         println(io, "  $name: ", value)
     end
 end
+
+import Base.:(==)
+
+function ==(t1::Term, t2::Term)
+    return t1.iri == t2.iri
+end
+
+import Base.hash
+
+function hash(t::Term, h::UInt)
+    return hash(t.iri, h)
+end
