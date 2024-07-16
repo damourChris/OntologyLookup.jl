@@ -1,11 +1,7 @@
 using OntologyLookup
 using Test
+using TestItemRunner
 
-@testset "OntologyLookup.jl" begin
-
-    # Search Module Tests
-    include("test_search.jl")
-
-    # Ontology Term Controller Tests
-    include("test_term_controller.jl")
+@testset "Unit Tests OntologyLookup.jl" begin
+    @run_package_tests
 end
