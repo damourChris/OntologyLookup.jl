@@ -102,7 +102,7 @@ Fetches the parent terms for a given term.
 # Returns
 An array of `Term` objects representing the parent terms of the given term, or `missing` if an error occurs.
 
-""" 
+"""
 function get_parents(term::Term)
     iri = term.iri
     iri_encoded = HTTP.URIs.escapeuri(iri)
