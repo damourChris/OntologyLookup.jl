@@ -2,6 +2,10 @@ using OntologyLookup
 using Documenter
 
 DocMeta.setdocmeta!(OntologyLookup, :DocTestSetup, :(using OntologyLookup); recursive=true)
+Changelog.generate(Changelog.Documenter(),
+                   joinpath(@__DIR__, "../CHANGELOG.md"),
+                   joinpath(@__DIR__, "src/changelog.md");
+                   repo="damourChris/OntologyLookup.jl",)
 
 makedocs(;
          modules=[OntologyLookup],
