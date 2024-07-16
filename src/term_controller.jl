@@ -21,7 +21,7 @@ Fetches ontology terms from the OLS API based on the specified parameters.
 ## Arguments
 - `onto::AbstractString`: The name of the ontology to fetch terms from.
 - `id::AbstractString`: (optional) The ID of the term.
-- `iri::AbstractString`: (optional) The IRI of the term.
+- `iri::AbstractString`: (optional) The IRI of the term. Note, set encode_iri to false if the IRI is already encoded.
 - `short_from::AbstractString`: (optional) The short form of the term.
 - `obo_id`: (optional) The OBO ID of the term.
 - `obsoletes::Bool`: (optional) Whether to include obsoleted terms. Default is `false`.
@@ -34,10 +34,11 @@ A dictionary of terms, where the keys are the OBO IDs of the terms and the value
 function onto_terms(onto::AbstractString;
                     id::AbstractString="",
                     iri::AbstractString="", short_from::AbstractString="", obo_id="",
-                    obsoletes::Bool=false, lang::AbstractString="en")
+                    obsoletes::Bool=false, lang::AbstractString="en", encode_iri::Bool=true)
     url = OLS_BASE_URL * "ontologies/" * onto * "/terms"
     # Only include the parameters that are not empty
-    q = Dict("id" => id, "iri" => iri, "short_form" => short_from, "obo_id" => obo_id,
+    q = Dict("id" => id, "iri" => encode_iri ? HTTP.URIs.escapeuri(iri) : iri,
+             "short_form" => short_from, "obo_id" => obo_id,
              "obsoletes" => obsoletes, "lang" => lang)
     q = filter(x -> x[2] != "" && x[2] != false, q)
 
@@ -57,7 +58,7 @@ function onto_terms(onto::AbstractString;
 end
 
 """
-    onto_term(onto::AbstractString, iri::AbstractString; [lang="en"])
+    onto_term(onto::AbstractString, iri::AbstractString; [lang="en", encode_iri=true])
 
 Fetches the term information from the specified ontology using the given IRI.
 
@@ -65,16 +66,18 @@ Fetches the term information from the specified ontology using the given IRI.
 - `onto::AbstractString`: The name of the ontology.
 - `iri::AbstractString`: The IRI (Internationalized Resource Identifier) of the term.
 - `lang::AbstractString`: (optional) The language code for the term description. Default is "en".
+- `encode_iri::Bool` (optional): Whether to encode the IRI before making the request. Default is `true`.
 
 # Returns
 - If the term is found, returns a `Term` object containing the term information.
 - If there is an error fetching the term, a warning is issued and `missing` is returned.
 
 """
-function onto_term(onto::AbstractString, iri::AbstractString; lang="en")
-    iri_encoded = HTTP.URIs.escapeuri(iri)
-    iri_double_encoded = HTTP.URIs.escapeuri(iri_encoded)
-    url = OLS_BASE_URL * "ontologies/" * onto * "/terms/" * iri_double_encoded
+function onto_term(onto::AbstractString, iri::AbstractString; lang="en",
+                   encode_iri::Bool=true)
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
+
+    url = OLS_BASE_URL * "ontologies/" * onto * "/terms/" * iri_encoded
 
     q = Dict("lang" => lang)
 
@@ -98,17 +101,19 @@ Fetches the parent terms for a given term.
 
 # Arguments
 - `term::Term`: The term for which to fetch the parent terms.
+- `encode_iri::Bool` (optional): Whether to encode the IRI before making the request. Default is `true` since IRI are usually stored non-encode in Term struct.
 
 # Returns
 An array of `Term` objects representing the parent terms of the given term, or `missing` if an error occurs.
 
 """
-function get_parents(term::Term)
+function get_parents(term::Term; encode_iri::Bool=true)
     iri = term.iri
-    iri_encoded = HTTP.URIs.escapeuri(iri)
-    iri_double_encoded = HTTP.URIs.escapeuri(iri_encoded)
+
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
+
     url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
-          iri_double_encoded *
+          iri_encoded *
           "/parents"
 
     parents = try
@@ -134,6 +139,7 @@ Fetches the hierarchical parent of a given term.
 ## Arguments
 - `term::Term`: The term for which to fetch the hierarchical parent.
 - `preferred_parent::Union{Missing,Term}` (optional): The preferred parent term to be returned, if multiple parents are found.
+- `encode_iri::Bool` (optional): Whether to encode the IRI before making the request. Default is `true` since IRI are usually stored non-encode in Term struct.
 
 ## Returns
 - If a single parent is found, returns the hierarchical parent as a `Term` object.
@@ -142,13 +148,14 @@ Fetches the hierarchical parent of a given term.
 - If an error occurs while fetching the parents, returns `missing`.
 
 """
-function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Term}=missing)
+function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Term}=missing,
+                                 encode_iri::Bool=true)
     iri = term.iri
-    iri_encoded = HTTP.URIs.escapeuri(iri)
-    iri_double_encoded = HTTP.URIs.escapeuri(iri_encoded)
+
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
 
     url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
-          iri_double_encoded *
+          iri_encoded *
           "/hierarchicalParents"
 
     data = try
