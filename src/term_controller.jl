@@ -37,7 +37,8 @@ function onto_terms(onto::AbstractString;
                     obsoletes::Bool=false, lang::AbstractString="en", encode_iri::Bool=true)
     url = OLS_BASE_URL * "ontologies/" * onto * "/terms"
     # Only include the parameters that are not empty
-    q = Dict("id" => id, "iri" => encode_iri ? HTTP.URIs.escapeuri(iri) : iri,
+    q = Dict("id" => id,
+             "iri" => encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri,
              "short_form" => short_from, "obo_id" => obo_id,
              "obsoletes" => obsoletes, "lang" => lang)
     q = filter(x -> x[2] != "" && x[2] != false, q)
@@ -75,7 +76,7 @@ Fetches the term information from the specified ontology using the given IRI.
 """
 function onto_term(onto::AbstractString, iri::AbstractString; lang="en",
                    encode_iri::Bool=true)
-    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
 
     url = OLS_BASE_URL * "ontologies/" * onto * "/terms/" * iri_encoded
 
@@ -110,7 +111,7 @@ An array of `Term` objects representing the parent terms of the given term, or `
 function get_parents(term::Term; encode_iri::Bool=true)
     iri = term.iri
 
-    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
 
     url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
           iri_encoded *
@@ -152,7 +153,7 @@ function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Ter
                                  encode_iri::Bool=true)
     iri = term.iri
 
-    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(iri) : iri
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
 
     url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
           iri_encoded *
