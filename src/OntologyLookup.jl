@@ -17,6 +17,10 @@ include("term_controller.jl")
 using .TermController
 export onto_terms, onto_term, get_parents, get_hierarchical_parent
 
+include("ontologies.jl")
+using .Ontologies
+export Ontology, list_ontologies, list_ontologies_ids, get_ontology
+
 function __init__()
 end
 
