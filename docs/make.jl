@@ -20,6 +20,7 @@ makedocs(;
                 "Search" => "search.md",
                 "Term Controller" => "term_controller.md",
                 "Ontologies" => "ontologies.md",
+                "Changelog" => "changelog.md",
                 "Reference" => "reference.md"],)
 
 deploydocs(;
