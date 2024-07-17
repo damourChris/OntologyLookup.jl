@@ -42,4 +42,11 @@ get_ontology("CHEBI")
 ```
 
 
+# References
+
+```@autodocs
+Modules = [OntologyLookup.Ontologies]
+```
+
+
 
