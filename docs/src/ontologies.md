@@ -7,7 +7,7 @@ The OLS provides access to a wide range of ontologies, including the following:
 - [GO](http://geneontology.org/)
 - [NCBITaxon](https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi)
 - [PR](https://proconsortium.org/)
-- [UBERON](http://uberon.github.io/)
+- [UBERON](http://obophenotype.github.io/uberon/)
 - [EFO](https://www.ebi.ac.uk/efo/)
 
 The OLS also provides access to the following cross-domain ontologies:
