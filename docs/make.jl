@@ -19,6 +19,7 @@ makedocs(;
          pages=["Home" => "index.md",
                 "Search" => "search.md",
                 "Term Controller" => "term_controller.md",
+                "Ontologies" => "ontologies.md",
                 "Reference" => "reference.md"],)
 
 deploydocs(;
