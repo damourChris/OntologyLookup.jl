@@ -1,7 +1,6 @@
 # Test onto_properties()
 # Test case 1: Test with valid ontology name
-# testbroken = false
-@testitem "Valid ontology name" begin
+@test_broken "Valid ontology name" begin
     onto = "duo"
     properties = onto_properties(onto)
     @test !isempty(properties)
@@ -19,8 +18,7 @@ end
 #     @test typeof(properties) == Dict{String,Term}
 # end
 
-# testbroken = false
-@testitem "Additional parameters - short_from" begin
+@test_broken "Additional parameters - short_from" begin
     onto = "duo"
     short_from = "BFO_0000050"
 
@@ -42,7 +40,7 @@ end
 # end
 
 # testbroken = false
-@testitem "Additional parameters - lang" begin
+@test_broken "Additional parameters - lang" begin
     onto = "duo"
     lang = "en"
     properties = onto_properties(onto; lang=lang)
@@ -53,7 +51,7 @@ end
 # Test onto_property()
 # Test case 1: Test with valid ontology name and IRI
 # testbroken = false
-@testitem "Valid ontology name and IRI" begin
+@test_broken "Valid ontology name and IRI" begin
     onto = "duo"
     iri = "http://purl.obolibrary.org/obo/BFO_0000051"
     term = onto_property(onto, iri)
@@ -63,7 +61,7 @@ end
 
 # Test case 2: Test with empty ontology name and IRI
 # testbroken = false
-@testitem "Empty ontology name and IRI" begin
+@test_broken "Empty ontology name and IRI" begin
     onto = ""
     iri = ""
     term = onto_property(onto, iri)
@@ -73,7 +71,7 @@ end
 
 # Test case 3: Test with valid ontology name and encoded IRI
 # testbroken = true
-@testitem "Valid ontology name and encoded IRI" begin
+@test_broken "Valid ontology name and encoded IRI" begin
     onto = "duo"
     iri = "ttp://purl.obolibrary.org/obo/BFO_0000051"
     term = onto_property(onto, iri; encode_iri=true)
