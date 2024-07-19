@@ -1,4 +1,4 @@
-# # PropertyController API Wrapper 
+# PropertyController API Wrapper 
 
 ```@autodocs
 Modules = [OntologyLookup.PropertyController]
