@@ -165,9 +165,46 @@ function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Ter
         body = JSON3.read(String(response.body), Dict)
         data = body["_embedded"]["terms"]
         if (length(data) > 1)
-            if !isnothing(preferred_parent)
+            if !ismissing(preferred_parent)
                 for parent in data
                     if Term(parent) == preferred_parent
+                        @info "Preferred parent found for term with IRI: $iri."
+                        return preferred_parent
+                    end
+                end
+            end
+            @warn "More than one parent found for term with IRI: $iri. Returning the first parent."
+        end
+        parent = Term(data[1])
+        return parent
+    catch
+        @warn "Error fetching parents for term with IRI: $iri. Returning missing."
+        return missing
+    end
+
+    return data
+end
+
+function get_hierarchical_parent(term::Term;
+                                 preferred_parents::Union{Missing,Vector{Term}}=missing,
+                                 encode_iri::Bool=true)
+    iri = term.iri
+
+    iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
+
+    url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
+          iri_encoded *
+          "/hierarchicalParents"
+
+    data = try
+        response = Client.get(url)
+
+        body = JSON3.read(String(response.body), Dict)
+        data = body["_embedded"]["terms"]
+        if (length(data) > 1)
+            if !ismissing(preferred_parent)
+                for parent in data
+                    if Term(parent) in preferred_parents
                         @info "Preferred parent found for term with IRI: $iri."
                         return preferred_parent
                     end
