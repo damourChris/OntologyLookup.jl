@@ -190,7 +190,7 @@ function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Ter
 end
 
 function get_hierarchical_parent(term::Term;
-                                 preferred_parents::Union{Missing,Vector{Term}}=missing,
+                                 preferred_parent::Union{Missing,Vector{Term}}=missing,
                                  encode_iri::Bool=true)
     iri = term.iri
 
