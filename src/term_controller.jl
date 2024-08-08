@@ -154,7 +154,7 @@ Fetches the hierarchical parent of a given term.
 """
 function get_hierarchical_parent(term::Term;
                                  preferred_parent::Union{Missing,Term,Vector{Term}}=missing,
-                                 encode_iri::Bool=true)
+                                 encode_iri::Bool=true, include_UBERON::Bool=true)
     iri = term.iri
 
     iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
@@ -188,7 +188,17 @@ function get_hierarchical_parent(term::Term;
             end
             @warn "More than one parent found for term with IRI: $iri. Returning the first parent."
         end
-        parent = Term(data[1])
+        if include_UBERON
+            parent = Term(data[1])
+        else
+            for parent in data
+                if startswith(parent.obo_id, "UBERON")
+                    continue
+                end
+                parent = Term(parent)
+            end
+        end
+
         return parent
     catch e
         @error e
