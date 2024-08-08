@@ -192,7 +192,7 @@ function get_hierarchical_parent(term::Term;
             parent = Term(data[1])
         else
             for parent in data
-                if startswith(parent[:obo_id], "UBERON")
+                if startswith(parent["obo_id"], "UBERON")
                     continue
                 end
                 parent = Term(parent)
