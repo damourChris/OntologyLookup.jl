@@ -191,11 +191,11 @@ function get_hierarchical_parent(term::Term;
         if include_UBERON
             parent = Term(data[1])
         else
-            for parent in data
-                if startswith(parent["obo_id"], "UBERON")
+            for potential_parent in data
+                if startswith(potential_parent["obo_id"], "UBERON")
                     continue
                 end
-                parent = Term(parent)
+                parent = Term(potential_parent)
             end
         end
 
