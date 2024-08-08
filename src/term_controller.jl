@@ -52,7 +52,8 @@ function onto_terms(onto::AbstractString;
 
         terms = Dict([term["obo_id"] => Term(term) for term in data])
         return terms
-    catch
+    catch e
+        @error e
         @warn "Error fetching term with IRI: $iri. Returning missing."
         return missing
     end
@@ -87,7 +88,8 @@ function onto_term(onto::AbstractString, iri::AbstractString; lang="en",
         body = JSON3.read(String(response.body), Dict)
         term = Term(body)
         return term
-    catch
+    catch e
+        @error e
         @warn "Error fetching term with IRI: $iri. Returning missing."
         return missing
     end
@@ -124,7 +126,8 @@ function get_parents(term::Term; encode_iri::Bool=true)
         data = body["_embedded"]["terms"]
         parents = [Term(parent) for parent in data]
         return parents
-    catch
+    catch e
+        @error e
         @warn "Error fetching parents for term with IRI: $iri. Returning missing."
         return missing
     end
@@ -177,7 +180,8 @@ function get_hierarchical_parent(term::Term; preferred_parent::Union{Missing,Ter
         end
         parent = Term(data[1])
         return parent
-    catch
+    catch e
+        @error e
         @warn "Error fetching parents for term with IRI: $iri. Returning missing."
         return missing
     end
@@ -214,7 +218,8 @@ function get_hierarchical_parent(term::Term;
         end
         parent = Term(data[1])
         return parent
-    catch
+    catch e
+        @error e
         @warn "Error fetching parents for term with IRI: $iri. Returning missing."
         return missing
     end
