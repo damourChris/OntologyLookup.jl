@@ -106,4 +106,33 @@ function onto_property(onto::AbstractString, iri::AbstractString; encode_iri::Bo
     end
 end
 
+"""
+    roots(onto::String)::Union{Vector{Term},Missing}
+
+Fetches the root terms of the ontology specified by `onto`.
+
+# Arguments
+- `onto::String`: The name of the ontology.
+
+# Returns
+- If successful, returns a vector of Terms representing the root terms of the ontology.
+- If an error occurs during the API request, returns `missing`.
+"""
+function roots(onto::String)::Union{Vector{Term},Missing}
+    url = OLS_BASE_URL * "ontologies/" * onto * "/roots"
+    data = try
+        response = Client.get(url)
+        body = JSON3.read(String(response.body), Dict)
+
+        data = body["_embedded"]["properties"]
+
+        return [Term(root) for root in data]
+    catch e
+        @error e
+        @warn "Error fetching roots for ontology with ID: $onto. Returning"
+    end
+
+    return data
+end
+
 end # module
