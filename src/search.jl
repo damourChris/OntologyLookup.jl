@@ -46,8 +46,8 @@ Searches for ontology terms from the Ontology Lookup Service (OLS) using a searc
 A DataFrame containing the search results.
 
 """
-function search(q::String; rows::Int=10, ontology::String="", exact::Bool=false)
-    q = Dict("q" => q, "rows" => rows, "ontology" => ontology, "exactMatch" => exact)
+function search(q::String; rows::Int=10, ontogy_id::String="", exact::Bool=false)
+    q = Dict("q" => q, "rows" => rows, "ontology" => ontogy_id, "exactMatch" => exact)
     data = OLSquery(q)
 
     terms = [Term(term) for term in data]

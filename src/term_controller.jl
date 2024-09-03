@@ -8,7 +8,7 @@ using HTTP
 import ..OntologyLookup: OLS_BASE_URL, Term
 
 """
-    onto_terms(onto::AbstractString;
+    onto_terms(ontogy_id::AbstractString;
                [id::AbstractString="",
                iri::AbstractString="",
                short_from::AbstractString="",
@@ -19,7 +19,7 @@ import ..OntologyLookup: OLS_BASE_URL, Term
 Fetches ontology terms from the OLS API based on the specified parameters.
 
 ## Arguments
-- `onto::AbstractString`: The name of the ontology to fetch terms from.
+- `ontogy_id::AbstractString`: The name of the ontology to fetch terms from.
 - `id::AbstractString`: (optional) The ID of the term.
 - `iri::AbstractString`: (optional) The IRI of the term.
 - `short_from::AbstractString`: (optional) The short form of the term.
@@ -31,11 +31,11 @@ Fetches ontology terms from the OLS API based on the specified parameters.
 A dictionary of terms, where the keys are the OBO IDs of the terms and the values are `Term` objects.
 
 """
-function onto_terms(onto::AbstractString;
+function onto_terms(ontogy_id::AbstractString;
                     id::AbstractString="",
                     iri::AbstractString="", short_from::AbstractString="", obo_id="",
                     obsoletes::Bool=false, lang::AbstractString="en", encode_iri::Bool=true)
-    url = OLS_BASE_URL * "ontologies/" * onto * "/terms"
+    url = OLS_BASE_URL * "ontologies/" * ontogy_id * "/terms"
     # Only include the parameters that are not empty
     q = Dict("id" => id,
              "iri" => encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri,
@@ -60,12 +60,12 @@ function onto_terms(onto::AbstractString;
 end
 
 """
-    onto_term(onto::AbstractString, iri::AbstractString; [lang="en", encode_iri=true])
+    onto_term(ontogy_id::AbstractString, iri::AbstractString; [lang="en", encode_iri=true])
 
 Fetches the term information from the specified ontology using the given IRI.
 
 # Arguments
-- `onto::AbstractString`: The name of the ontology.
+- `ontogy_id::AbstractString`: The name of the ontology.
 - `iri::AbstractString`: The IRI (Internationalized Resource Identifier) of the term.
 - `lang::AbstractString`: (optional) The language code for the term description. Default is "en".
 - `encode_iri::Bool` (optional): Whether to encode the IRI before making the request. Default is `true`.
@@ -75,11 +75,11 @@ Fetches the term information from the specified ontology using the given IRI.
 - If there is an error fetching the term, a warning is issued and `missing` is returned.
 
 """
-function onto_term(onto::AbstractString, iri::AbstractString; lang="en",
+function onto_term(ontogy_id::AbstractString, iri::AbstractString; lang="en",
                    encode_iri::Bool=true)
     iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
 
-    url = OLS_BASE_URL * "ontologies/" * onto * "/terms/" * iri_encoded
+    url = OLS_BASE_URL * "ontologies/" * ontogy_id * "/terms/" * iri_encoded
 
     q = Dict("lang" => lang)
 

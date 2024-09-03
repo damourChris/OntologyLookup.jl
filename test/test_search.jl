@@ -11,7 +11,7 @@ end
 end
 
 @testitem "query a specific ontology" begin
-    res = search("cancer"; ontology="go")
+    res = search("cancer"; ontology_id="go")
 
     @test all(res.ontology_prefix .== "GO")
 end

@@ -8,17 +8,17 @@ using HTTP
 export onto_properties, onto_property
 
 """
-    onto_properties(onto::AbstractString;
+    onto_properties(ontogy_id::AbstractString;
                     [iri::AbstractString="",
                     short_from::AbstractString="",
                     obo_id="",
                     lang::AbstractString="en",
                     encode_iri::Bool=true])
 
-Fetches the properties of an ontology specified by `onto`.
+Fetches the properties of an ontology specified by `ontogy_id`.
 
 # Arguments
-- `onto::AbstractString`: The name of the ontology.
+- `ontogy_id::AbstractString`: The name of the ontology.
 - `iri::AbstractString`: (optional) The IRI of the property.
 - `short_from::AbstractString`: (optional) The short form of the property.
 - `obo_id`: (optional) The OBO ID of the property.
@@ -30,9 +30,9 @@ Fetches the properties of an ontology specified by `onto`.
 
 # Example
 ```julia
-onto = "duo"
+ontogy_id = "duo"
 iri = "http://purl.obolibrary.org/obo/BFO_0000050"
-properties = onto_properties(onto; iri=iri)
+properties = onto_properties(ontogy_id; iri=iri)
 ```
 
 # See also
@@ -40,13 +40,13 @@ properties = onto_properties(onto; iri=iri)
 - [`onto_property()`](@ref)
 
 """
-function onto_properties(onto::AbstractString;
+function onto_properties(ontogy_id::AbstractString;
                          iri::AbstractString="",
                          short_from::AbstractString="",
                          obo_id="",
                          lang::AbstractString="en",
                          encode_iri::Bool=true)
-    url = OLS_BASE_URL * "ontologies/" * onto * "/properties"
+    url = OLS_BASE_URL * "ontologies/" * ontogy_id * "/properties"
     iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
     # Only include the parameters that are not empty
     q = Dict("iri" => iri_encoded, "short_form" => short_from, "obo_id" => obo_id,
@@ -70,12 +70,12 @@ function onto_properties(onto::AbstractString;
 end
 
 """
-    onto_property(onto::AbstractString, iri::AbstractString; encode_iri::Bool=false)
+    onto_property(ontogy_id::AbstractString, iri::AbstractString; encode_iri::Bool=false)
 
 Fetches the term with the given IRI from the specified ontology.
 
 # Arguments
-- `onto::AbstractString`: The name of the ontology.
+- `ontogy_id::AbstractString`: The name of the ontology.
 - `iri::AbstractString`: The IRI (Internationalized Resource Identifier) of the term.
 - `encode_iri::Bool=false`: Whether to encode the IRI before making the request.
 
@@ -87,10 +87,11 @@ Fetches the term with the given IRI from the specified ontology.
 - [`onto_properties()`](@ref)
 
 """
-function onto_property(onto::AbstractString, iri::AbstractString; encode_iri::Bool=false)
+function onto_property(ontogy_id::AbstractString, iri::AbstractString;
+                       encode_iri::Bool=false)
     iri_encoded = encode_iri ? HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri)) : iri
 
-    url = OLS_BASE_URL * "ontologies/" * onto * "/properties/" * iri_encoded
+    url = OLS_BASE_URL * "ontologies/" * ontogy_id * "/properties/" * iri_encoded
 
     try
         response = Client.get(url)
@@ -107,9 +108,9 @@ function onto_property(onto::AbstractString, iri::AbstractString; encode_iri::Bo
 end
 
 """
-    roots(onto::String)::Union{Vector{Term},Missing}
+    roots(ontogy_id::String)::Union{Vector{Term},Missing}
 
-Fetches the root terms of the ontology specified by `onto`.
+Fetches the root terms of the ontology specified by `ontogy_id`.
 
 # Arguments
 - `onto::String`: The name of the ontology.
@@ -118,8 +119,8 @@ Fetches the root terms of the ontology specified by `onto`.
 - If successful, returns a vector of Terms representing the root terms of the ontology.
 - If an error occurs during the API request, returns `missing`.
 """
-function roots(onto::String)::Union{Vector{Term},Missing}
-    url = OLS_BASE_URL * "ontologies/" * onto * "/roots"
+function roots(ontogy_id::String)::Union{Vector{Term},Missing}
+    url = OLS_BASE_URL * "ontologies/" * ontogy_id * "/roots"
     data = try
         response = Client.get(url)
         body = JSON3.read(String(response.body), Dict)
@@ -129,7 +130,7 @@ function roots(onto::String)::Union{Vector{Term},Missing}
         return [Term(root) for root in data]
     catch e
         @error e
-        @warn "Error fetching roots for ontology with ID: $onto. Returning"
+        @warn "Error fetching roots for ontology with ID: $ontogy_id. Returning"
     end
 
     return data
