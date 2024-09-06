@@ -1,10 +1,13 @@
 module TermController
 
-export onto_terms, onto_term, get_parents, get_hierarchical_parent
+export onto_terms, onto_term, get_parents, get_hierarchical_parent, get_tree
 
 using ..Client
 using JSON3
 using HTTP
+using Graphs
+using MetaGraphs
+
 import ..OntologyLookup: OLS_BASE_URL, Term
 
 """
@@ -200,6 +203,54 @@ function get_hierarchical_parent(term::Term;
         end
 
         return parent
+    catch e
+        @error e
+        @warn "Error fetching parents for term with IRI: $iri. Returning missing."
+        return missing
+    end
+
+    return data
+end
+
+function get_tree(term::Term)::Union{MetaGraphs.MetaDiGraph,Missing}
+    iri = term.iri
+
+    iri_encoded = HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri))
+
+    url = OLS_BASE_URL * "ontologies/" * term.ontology_name * "/terms/" *
+          iri_encoded *
+          "/graph"
+
+    data = try
+        response = Client.get(url)
+
+        body = JSON3.read(String(response.body), Dict)
+        nodes = body["nodes"]
+        edges = body["edges"]
+
+        graph = MetaDiGraph()
+
+        node_index = Dict{String,Int}()
+
+        # Add all the nodes to the graph
+        for (index, node) in enumerate(nodes)
+            add_vertex!(graph)
+            set_prop!(graph, index, :iri, node["iri"])
+            set_prop!(graph, index, :label, node["label"])
+            node_index[node["iri"]] = index
+        end
+
+        # Add all the edges
+        for edge in edges
+            # Note that we have to first find the index in the graph 
+            s_id = node_index[edge["source"]]
+            t_id = node_index[edge["target"]]
+            add_edge!(graph, s_id, t_id)
+            set_prop!(graph, Edge(s_id, t_id), :label, edge["label"])
+            set_prop!(graph, Edge(s_id, t_id), :uri, edge["uri"])
+        end
+
+        return graph
     catch e
         @error e
         @warn "Error fetching parents for term with IRI: $iri. Returning missing."

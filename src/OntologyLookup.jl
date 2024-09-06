@@ -15,7 +15,7 @@ export search
 
 include("term_controller.jl")
 using .TermController
-export onto_terms, onto_term, get_parents, get_hierarchical_parent
+export onto_terms, onto_term, get_parents, get_hierarchical_parent, get_tree
 
 include("property_controller.jl")
 using .PropertyController

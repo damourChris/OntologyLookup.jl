@@ -165,3 +165,11 @@ end
         @test ismissing(term)
     end
 end
+
+@testitem "should return a graph" begin
+    test_term = onto_term("cl", "http://purl.obolibrary.org/obo/CL_0000084")
+
+    graph = get_tree(test_term)
+
+    @test !ismissing(graph)
+end
