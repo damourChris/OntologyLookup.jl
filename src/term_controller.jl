@@ -172,19 +172,28 @@ function get_hierarchical_parent(term::Term;
 
         body = JSON3.read(String(response.body), Dict)
         data = body["_embedded"]["terms"]
+
+        if (isempty(data))
+            @warn "No parents found for term with IRI: $iri. Returning missing."
+            return missing
+        end
+
         if (length(data) > 1)
+            if !return_unique_parent
+                @info "Returning all parents for term with IRI: $iri."
+                return data
+            end
+
             if !ismissing(preferred_parent)
                 for parent in data
                     if typeof(preferred_parent) == Vector{Term}
-                        if !return_unique_parent
-                            return data
-                        end
                         for p in preferred_parent
                             if Term(parent) == p
                                 @info "Preferred parent found for term with IRI: $iri."
                                 return p
                             end
                         end
+                        @warn "More than one parent found for term with IRI: $iri. Returning the first parent."
                     else
                         if Term(parent) == preferred_parent
                             @info "Preferred parent found for term with IRI: $iri."
@@ -193,7 +202,6 @@ function get_hierarchical_parent(term::Term;
                     end
                 end
             end
-            @warn "More than one parent found for term with IRI: $iri. Returning the first parent."
         end
         if include_UBERON
             parent = Term(data[1])
