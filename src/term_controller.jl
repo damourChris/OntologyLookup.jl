@@ -214,7 +214,7 @@ end
 
 function get_tree(term::Term,
                   edges_filters::Array{<:AbstractString}=[""])::Union{MetaGraphs.MetaDiGraph,
-                                                                    Missing}
+                                                                      Missing}
     iri = term.iri
 
     iri_encoded = HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri))
@@ -236,7 +236,10 @@ function get_tree(term::Term,
         # Add all the edges
         for edge in edges
             # Check if the edges label in is the edges
-            if all(x -> isempty(x), edges_filters) && !(edge["label"] in edges_filters)
+            if all(x -> isempty(x), edges_filters)
+                continue
+            end
+            if !(edge["label"] in edges_filters)
                 continue
             end
 
