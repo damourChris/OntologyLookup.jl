@@ -173,3 +173,14 @@ end
 
     @test !ismissing(graph)
 end
+
+@testitem "should return a graph with filtered edges - 1 given" begin
+    using Graphs
+    test_term = onto_term("cl", "http://purl.obolibrary.org/obo/CL_0000084")
+
+    graph = get_tree(test_term, ["subClassOf"])
+
+    @test !ismissing(graph)
+    # Check eprops to see if there are all edge haveht the value "subClassOf" for the label prop
+    @test all(e -> graph.eprops[e][:label] == "subClassOf", edges(graph))
+end

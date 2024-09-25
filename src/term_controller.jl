@@ -212,7 +212,9 @@ function get_hierarchical_parent(term::Term;
     return data
 end
 
-function get_tree(term::Term)::Union{MetaGraphs.MetaDiGraph,Missing}
+function get_tree(term::Term,
+                  edges_filters::Array{<:AbstractString}=[])::Union{MetaGraphs.MetaDiGraph,
+                                                                    Missing}
     iri = term.iri
 
     iri_encoded = HTTP.URIs.escapeuri(HTTP.URIs.escapeuri(iri))
@@ -230,24 +232,33 @@ function get_tree(term::Term)::Union{MetaGraphs.MetaDiGraph,Missing}
 
         graph = MetaDiGraph()
 
-        node_index = Dict{String,Int}()
-
-        # Add all the nodes to the graph
-        for (index, node) in enumerate(nodes)
-            add_vertex!(graph)
-            set_prop!(graph, index, :iri, node["iri"])
-            set_prop!(graph, index, :label, node["label"])
-            node_index[node["iri"]] = index
-        end
-
+        index = 0
         # Add all the edges
         for edge in edges
+            # Check if the edges label in is the edges
+            if !isempty(edges_filters) && !(edge["label"] in edges_filters)
+                continue
+            end
+
+            # Add the source and target nodes
+            src_node_iri = edge["source"]
+            src_node = nodes[findfirst(x -> x["iri"] == src_node_iri, nodes)]
+            dst_node_iri = edge["target"]
+            dst_node = nodes[findfirst(x -> x["iri"] == dst_node_iri, nodes)]
+            add_vertex!(graph)
+            index += 1
+            set_prop!(graph, index, :iri, src_node["iri"])
+            set_prop!(graph, index, :label, src_node["label"])
+
+            add_vertex!(graph)
+            set_prop!(graph, index + 1, :iri, dst_node["iri"])
+            set_prop!(graph, index + 1, :label, dst_node["label"])
+
             # Note that we have to first find the index in the graph 
-            s_id = node_index[edge["source"]]
-            t_id = node_index[edge["target"]]
-            add_edge!(graph, s_id, t_id)
-            set_prop!(graph, Edge(s_id, t_id), :label, edge["label"])
-            set_prop!(graph, Edge(s_id, t_id), :uri, edge["uri"])
+            add_edge!(graph, index, index + 1)
+            set_prop!(graph, Edge(index, index + 1), :label, edge["label"])
+            set_prop!(graph, Edge(index, index + 1), :uri, edge["uri"])
+            index += 1
         end
 
         return graph
