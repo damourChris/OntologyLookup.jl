@@ -213,7 +213,7 @@ function get_hierarchical_parent(term::Term;
 end
 
 function get_tree(term::Term,
-                  edges_filters::Array{<:AbstractString}=[])::Union{MetaGraphs.MetaDiGraph,
+                  edges_filters::Array{<:AbstractString}=[""])::Union{MetaGraphs.MetaDiGraph,
                                                                     Missing}
     iri = term.iri
 
@@ -236,7 +236,7 @@ function get_tree(term::Term,
         # Add all the edges
         for edge in edges
             # Check if the edges label in is the edges
-            if !isempty(edges_filters) && !(edge["label"] in edges_filters)
+            if all(x -> isempty(x), edges_filters) && !(edge["label"] in edges_filters)
                 continue
             end
 
