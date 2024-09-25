@@ -181,7 +181,7 @@ function get_hierarchical_parent(term::Term;
         if (length(data) > 1)
             if !return_unique_parent
                 @info "Returning all parents for term with IRI: $iri."
-                return data
+                return Term.(data)
             end
 
             if !ismissing(preferred_parent)
