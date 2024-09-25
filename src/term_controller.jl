@@ -237,7 +237,7 @@ function get_tree(term::Term,
 
         # Add all the edges
         for edge in edges
-            index = nv(graph) + 1
+            index = nv(graph)
             # Check if the edges label in is the edges
             if all(x -> isempty(x), edges_filters)
                 continue
@@ -253,8 +253,9 @@ function get_tree(term::Term,
                 graph[src_node["iri"], :iri]
             catch
                 add_vertex!(graph)
-                set_prop!(graph, index, :iri, src_node["iri"])
-                set_prop!(graph, index, :label, src_node["label"])
+                set_prop!(graph, index + 1, :iri, src_node["iri"])
+                set_prop!(graph, index + 1, :label, src_node["label"])
+                index = nv(graph)
                 index
             end
 
@@ -268,7 +269,8 @@ function get_tree(term::Term,
                 add_vertex!(graph)
                 set_prop!(graph, index + 1, :iri, dst_node["iri"])
                 set_prop!(graph, index + 1, :label, dst_node["label"])
-                index + 1
+                index = nv(graph)
+                index
             end
 
             # Note that we have to first find the index in the graph 
