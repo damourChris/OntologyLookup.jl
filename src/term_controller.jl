@@ -157,6 +157,7 @@ Fetches the hierarchical parent of a given term.
 """
 function get_hierarchical_parent(term::Term;
                                  preferred_parent::Union{Missing,Term,Vector{Term}}=missing,
+                                 return_unique_parent::Bool=false,
                                  encode_iri::Bool=true, include_UBERON::Bool=true)
     iri = term.iri
 
@@ -175,6 +176,9 @@ function get_hierarchical_parent(term::Term;
             if !ismissing(preferred_parent)
                 for parent in data
                     if typeof(preferred_parent) == Vector{Term}
+                        if !return_unique_parent
+                            return data
+                        end
                         for p in preferred_parent
                             if Term(parent) == p
                                 @info "Preferred parent found for term with IRI: $iri."
