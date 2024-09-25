@@ -253,8 +253,8 @@ function get_tree(term::Term,
                 index = graph[src_node_iri]
             catch
                 add_vertex!(graph)
-                set_prop!(graph, src_index, :iri, src_node["iri"])
-                set_prop!(graph, src_index, :label, src_node["label"])
+                set_prop!(graph, index, :iri, src_node["iri"])
+                set_prop!(graph, index, :label, src_node["label"])
                 index
             end
 
