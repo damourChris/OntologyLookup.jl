@@ -232,6 +232,9 @@ function get_tree(term::Term,
 
         graph = MetaDiGraph()
 
+        # Set the indexing by the IRI
+        set_indexing_prop!(graph, :iri)
+
         index = 0
         # Add all the edges
         for edge in edges
@@ -243,22 +246,33 @@ function get_tree(term::Term,
                 continue
             end
 
-            # Add the source and target nodes
             src_node_iri = edge["source"]
             src_node = nodes[findfirst(x -> x["iri"] == src_node_iri, nodes)]
+
+            src_index = try
+                index = graph[src_node_iri]
+            catch
+                add_vertex!(graph)
+                set_prop!(graph, src_index, :iri, src_node["iri"])
+                set_prop!(graph, src_index, :label, src_node["label"])
+                index
+            end
+
+            # Add the source and target nodes
             dst_node_iri = edge["target"]
             dst_node = nodes[findfirst(x -> x["iri"] == dst_node_iri, nodes)]
-            add_vertex!(graph)
-            index += 1
-            set_prop!(graph, index, :iri, src_node["iri"])
-            set_prop!(graph, index, :label, src_node["label"])
 
-            add_vertex!(graph)
-            set_prop!(graph, index + 1, :iri, dst_node["iri"])
-            set_prop!(graph, index + 1, :label, dst_node["label"])
+            dst_index = try
+                index = graph[dst_node_iri]
+            catch
+                add_vertex!(graph)
+                set_prop!(graph, index + 1, :iri, dst_node["iri"])
+                set_prop!(graph, index + 1, :label, dst_node["label"])
+                index + 1
+            end
 
             # Note that we have to first find the index in the graph 
-            add_edge!(graph, index, index + 1)
+            add_edge!(graph, src_index, dst_index)
             set_prop!(graph, Edge(index, index + 1), :label, edge["label"])
             set_prop!(graph, Edge(index, index + 1), :uri, edge["uri"])
             index += 1
