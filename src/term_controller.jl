@@ -237,7 +237,7 @@ function get_tree(term::Term,
 
         # Add all the edges
         for edge in edges
-            index = nv(graph)
+            index = nv(graph) - 1
             # Check if the edges label in is the edges
             if all(x -> isempty(x), edges_filters)
                 continue
