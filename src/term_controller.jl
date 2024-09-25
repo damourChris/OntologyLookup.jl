@@ -273,8 +273,8 @@ function get_tree(term::Term,
 
             # Note that we have to first find the index in the graph 
             add_edge!(graph, src_index, dst_index)
-            set_prop!(graph, Edge(index, index + 1), :label, edge["label"])
-            set_prop!(graph, Edge(index, index + 1), :uri, edge["uri"])
+            set_prop!(graph, Edge(src_index, dst_index), :label, edge["label"])
+            set_prop!(graph, Edge(src_index, dst_index), :uri, edge["uri"])
             index += 1
         end
 
