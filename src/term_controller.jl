@@ -250,7 +250,7 @@ function get_tree(term::Term,
             src_node = nodes[findfirst(x -> x["iri"] == src_node_iri, nodes)]
 
             src_index = try
-                index = graph[src_node_iri]
+                graph[src_node_iri]
             catch
                 add_vertex!(graph)
                 set_prop!(graph, index, :iri, src_node["iri"])
@@ -263,7 +263,7 @@ function get_tree(term::Term,
             dst_node = nodes[findfirst(x -> x["iri"] == dst_node_iri, nodes)]
 
             dst_index = try
-                index = graph[dst_node_iri]
+                graph[dst_node_iri]
             catch
                 add_vertex!(graph)
                 set_prop!(graph, index + 1, :iri, dst_node["iri"])
