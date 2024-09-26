@@ -180,8 +180,20 @@ function get_hierarchical_parent(term::Term;
 
         if (length(data) > 1)
             if !return_unique_parent
-                @info "Returning all parents for term with IRI: $iri."
-                return Term.(data)
+                # Need to filter any parents that ahve UBERON terms
+                if include_UBERON
+                    @info "Returning all parents for term with IRI: $iri."
+                    return Term.(data)
+                else
+                    filtered_data = filter(x -> !startswith(x["obo_id"], "UBERON"), data)
+                    if isempty(filtered_data)
+                        @info "No non-UBERON parents found for term with IRI: $iri."
+                        return Term.(data)
+                    else
+                        @info "Returning all non-UBERON parents for term with IRI: $iri."
+                        return Term.(filtered_data)
+                    end
+                end
             end
 
             if !ismissing(preferred_parent)
