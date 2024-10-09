@@ -157,6 +157,7 @@ Fetches the hierarchical parent of a given term.
 """
 function get_hierarchical_parent(term::Term;
                                  preferred_parent::Union{Missing,Term,Vector{Term}}=missing,
+                                 terms_to_exclude::Vector{Term}=[],
                                  return_unique_parent::Bool=false,
                                  encode_iri::Bool=true, include_UBERON::Bool=true)
     iri = term.iri
@@ -179,6 +180,12 @@ function get_hierarchical_parent(term::Term;
         end
 
         if (length(data) > 1)
+
+            # Filter any terms that are in the terms_to_exclude list
+            if !ismissing(terms_to_exclude) && !isempty(terms_to_exclude)
+                data = filter(x -> !(Term(x) in terms_to_exclude), data)
+            end
+
             if !return_unique_parent
                 # Need to filter any parents that ahve UBERON terms
                 if include_UBERON
